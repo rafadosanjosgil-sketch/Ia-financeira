@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IA Financeira - Assistente Simulado</title>
+  <style>
+    :root{
+      --bg:#f5fbf7;
+      --card:#ffffff;
+      --accent:#0f9d58;
+      --muted:#6b7280;
+      --glass: rgba(255,255,255,0.8);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, var(--bg), #ecf9ef 60%);
+      color:#0f172a;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .app{
+      width:100%;
+      max-width:980px;
+      background:var(--card);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(6, 24, 32, 0.08);
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:0;
+      min-height:640px;
+    }
+
+    /* Left: Content / Landing */
+    .left{
+      padding:28px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+      color:var(--accent);
+      font-size:20px;
+    }
+    .brand .logo{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#34a853);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+    }
+    nav a{margin-left:14px;color:var(--muted);text-decoration:none;font-size:14px}
+    .hero{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .hero .info{
+      flex:1;
+    }
+    .hero h1{margin:0;font-size:28px}
+    .hero p{margin:8px 0 0;color:var(--muted)}
+
+    .features{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+      margin-top:18px;
+    }
+    .card{
+      background:var(--glass);
+      padding:14px;border-radius:10px;
+      border:1px solid rgba(15,157,88,0.06);
+    }
+    .cta{
+      margin-top:18px;
+    }
+    .btn{
+      background:var(--accent);
+      color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600;
+      box-shadow: 0 6px 18px rgba(15,157,88,0.16);
+    }
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(15,157,88,0.12);box-shadow:none}
+
+    /* Right: Chat */
+    .right{
+      background: linear-gradient(180deg,#ffffff, #f8fffa);
+      padding:18px;
+      border-left:1px solid rgba(15,157,88,0.04);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .chat-wrap{
+      flex:1;display:flex;flex-direction:column;gap:12px;overflow:auto;padding:6px;
+    }
+    .message{max-width:85%;padding:10px 12px;border-radius:10px;line-height:1.3;background:#eefbf0;border:1px solid rgba(15,157,88,0.06)}
+    .message.user{align-self:flex-end;background:#e6f0ff;border:1px solid rgba(14, 120, 255, 0.08)}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .input-row{display:flex;gap:8px;align-items:center}
+    .input{
+      flex:1;padding:10px 12px;border-radius:10px;border:1px solid #e6e9ee;background:#fff;font-size:14px;
+    }
+    .small{font-size:13px;color:var(--muted)}
+    .footer-note{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.4);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal{background:#fff;padding:18px;border-radius:12px;max-width:520px;width:100%;box-shadow:0 10px 30px rgba(2,6,23,0.2)}
+    .modal h3{margin:0 0 10px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .muted{color:var(--muted);font-size:13px}
+    .plan-result{background:#f1fff6;padding:12px;border-radius:10px;border:1px solid rgba(15,157,88,0.06);margin-top:10px}
+
+    /* small responsive */
+    @media (max-width:900px){
+      .app{grid-template-columns: 1fr;min-height:720px}
+      .right{order:-1}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="IA Financeira - protótipo">
+    <div class="left">
+      <header>
+        <div class="brand">
+          <div class="logo">IF</div>
+          <div>IA Financeira</div>
+        </div>
+        <nav>
+          <a href="#">Início</a>
+          <a href="#">Calculadora</a>
+          <a href="#">Dicas</a>
+          <a href="#">Assinatura</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="info">
+          <h1>Seu assistente financeiro simulado</h1>
+          <p>Receba orientações práticas para organizar suas finanças, controlar dívidas e criar metas — protótipo sem conexão com modelos externos.</p>
+          <div style="margin-top:12px">
+            <button id="open-chat" class="btn">Abrir chat</button>
+            <button id="open-plan" class="btn ghost" style="margin-left:8px">Gerar plano financeiro</button>
+          </div>
+        </div>
+        <div style="width:180px">
+          <div class="card">
+            <strong>Funções rápidas</strong>
+            <ul style="padding-left:16px;margin-top:8px;color:var(--muted)">
+              <li>Chat simulado por palavras-chave</li>
+              <li>Gerar plano para pagar dívida</li>
+              <li>Salvar histórico local</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="features" aria-hidden="true">
+        <div class="card">
+          <strong>Controle de gastos</strong>
+          <p class="muted" style="margin:6px 0 0">Sugestões simples para cortar gastos e reservar uma porcentagem da renda.</p>
+        </div>
+        <div class="card">
+          <strong>Simulações</strong>
+          <p class="muted" style="margin:6px 0 0">Calcule quanto pagar por mês para quitar dívidas em X meses.</p>
+        </div>
+        <div class="card">
+          <strong>Plano passo-a-passo</strong>
+          <p class="muted" style="margin:6px 0 0">Gerar plano com ações práticas e prioridades.</p>
+        </div>
+        <div class="card">
+          <strong>Sem custos de API</strong>
+          <p class="muted" style="margin:6px 0 0">Tudo roda no navegador — perfeito para protótipos.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px" class="card">
+        <strong>Aviso importante</strong>
+        <p class="muted" style="margin-top:6px">Esta ferramenta é apenas um protótipo educativo. As respostas são automáticas e baseadas em regras simples — não substituem orientação profissional.</p>
+      </div>
+    </div>
+
+    <div class="right" id="chat-panel" role="region" aria-label="Chat com IA Simulada">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-weight:700">Chat — IA Financeira (simulada)</div>
+          <div class="small">Converse em português. Ex.: "dívida", "guardar dinheiro", "investimento".</div>
+        </div>
+        <div>
+          <button id="clear" class="btn ghost" title="Limpar histórico">Limpar</button>
+        </div>
+      </div>
+
+      <div class="chat-wrap" id="chat" aria-live="polite">
+        <!-- mensagens -->
+      </div>
+
+      <div>
+        <div class="input-row">
+          <input id="user-input" class="input" placeholder="Escreva sua dúvida financeira..." aria-label="Sua mensagem">
+          <button id="send" class="btn">Enviar</button>
+          <button id="plan" class="btn ghost">Plano financeiro</button>
+        </div>
+        <div class="footer-note">A IA Financeira não substitui consultoria profissional. Use apenas como orientação inicial.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Plano -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3>Gerar plano financeiro</h3>
+      <p class="muted">Preencha os dados para gerar um plano simples de pagamento de dívida ou meta de economia.</p>
+      <div style="margin-top:10px" class="grid2">
+        <div>
+          <label class="muted">Tipo</label>
+          <select id="plan-type" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ee">
+            <option value="divida">Quitar dívida</option>
+            <option value="meta">Economizar para meta</option>
+          </select>
+        </div>
+        <div>
+          <label class="muted">Valor total (R$)</label>
+          <input id="amount" type="number" min="0" step="0.01" placeholder="Ex: 5000" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ee">
+        </div>
+      </div>
+
+      <div style="margin-top:10px" class="grid2">
+        <div>
+          <label class="muted">Prazo (meses)</label>
+          <input id="months" type="number" min="1" max="120" placeholder="Ex: 6" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ee">
+        </div>
+        <div>
+          <label class="muted">Renda mensal (R$) — opcional</label>
+          <input id="income" type="number" min="0" step="0.01" placeholder="Ex: 3000" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ee">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button id="calc" class="btn">Calcular plano</button>
+        <button id="close-modal" class="btn ghost">Fechar</button>
+      </div>
+
+      <div id="plan-output" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Utilidades e estado ---
+    const chatEl = document.getElementById('chat');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send');
+    const clearBtn = document.getElementById('clear');
+    const openChat = document.getElementById('open-chat');
+    const openPlan = document.getElementById('open-plan');
+    const planBtn = document.getElementById('plan');
+
+    // Modal elements
+    const modalBackdrop = document.getElementById('modal');
+    const closeModal = document.getElementById('close-modal');
+    const calcBtn = document.getElementById('calc');
+    const planOutput = document.getElementById('plan-output');
+
+    // Plan inputs
+    const amountEl = document.getElementById('amount');
+    const monthsEl = document.getElementById('months');
+    const incomeEl = document.getElementById('income');
+    const planTypeEl = document.getElementById('plan-type');
+
+    // Inicializa histórico do localStorage com limite
+    let history = [];
+    try {
+      const stored = localStorage.getItem('ia-finance-history');
+      if (stored) {
+        history = JSON.parse(stored).slice(-50); // Limita a 50 mensagens
+      }
+    } catch (e) {
+      console.warn('localStorage indisponível:', e);
+    }
+
+    // Função para salvar histórico com limite
+    function saveHistory() {
+      try {
+        if (history.length > 50) {
+          history = history.slice(-50);
+        }
+        localStorage.setItem('ia-finance-history', JSON.stringify(history));
+      } catch (e) {
+        console.warn('Falha ao salvar histórico:', e);
+      }
+    }
+
+    // Renderiza mensagens do histórico
+    function renderHistory() {
+      chatEl.innerHTML = '';
+      history.forEach(item => {
+        appendMessage(item.text, item.from, false);
+      });
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    // Adiciona mensagem ao chat (e opcionalmente salva)
+    function appendMessage(text, from='bot', save=true) {
+      const wrapper = document.createElement('div');
+      wrapper.className = from === 'user' ? 'message user' : 'message';
+      // metadata small
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = from === 'user' ? 'Você' : 'IA Financeira';
+      wrapper.appendChild(meta);
+
+      const content = document.createElement('div');
+      content.className = 'content';
+      content.style.whiteSpace = 'pre-wrap';
+      content.textContent = text;
+      wrapper.appendChild(content);
+
+      chatEl.appendChild(wrapper);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      if(save){
+        history.push({text, from, ts:Date.now()});
+        saveHistory();
+      }
+    }
+
+    // Função: simula digitação e depois insere texto
+    function botReplySimulated(fullText, delayPerChar=12) {
+      // cria bolha vazia
+      const wrapper = document.createElement('div');
+      wrapper.className = 'message';
+      const meta = document.createElement('div'); meta.className='meta'; meta.textContent='IA Financeira'; wrapper.appendChild(meta);
+
+      const content = document.createElement('div'); content.className='content'; wrapper.appendChild(content);
+      chatEl.appendChild(wrapper);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      // Simula "digitando"
+      let i=0;
+      const initialDelay = 400 + Math.random()*400;
+      setTimeout(()=> {
+        const timer = setInterval(()=> {
+          content.textContent = fullText.slice(0, i+1);
+          i++;
+          chatEl.scrollTop = chatEl.scrollHeight;
+          if(i >= fullText.length) {
+            clearInterval(timer);
+            // salvar
+            history.push({text: fullText, from:'bot', ts:Date.now()});
+            saveHistory();
+          }
+        }, delayPerChar);
+      }, initialDelay);
+    }
+
+    // Regras simples por palavra-chave
+    function ruleBasedAnswer(message) {
+      const m = message.toLowerCase();
+
+      // perguntas diretas com números?
+      // checar palavras-chave
+      if(m.includes('dívid') || m.includes('divida') || m.includes('dívida') || m.includes('quitar')) {
+        return "Entendo que você está preocupado com dívidas. Uma ação imediata: liste todas as dívidas e anote taxa de juros e valor. Priorize pagar as de juros mais altos. Quer que eu gere um plano para quitar uma dívida? Clique em 'Plano financeiro' e informe valor e prazo.";
+      }
+      if(m.includes('guardar') || m.includes('economizar') || m.includes('poupar') ) {
+        return "Ótimo — começar a guardar dinheiro é essencial.
